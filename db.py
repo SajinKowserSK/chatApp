@@ -16,7 +16,6 @@ def save_user(username, email, password):
     hashedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
     users = users_collection.insert_one({'_id': username, 'email': email, 'password': hashedPassword})
 
-save_user('sajinkowsersk', 'sajinkowser@gmail.com', 'shajin123')
 
 # given userID, finds info related to that primary key and creates user class with it
 def get_user(username):

@@ -5,7 +5,7 @@ from flask_socketio import SocketIO, join_room, leave_room
 from db import get_user
 
 app = Flask(__name__)
-app.secret_key = "sfdjkafnk"
+app.secret_key = "chatAppSK"
 socketio = SocketIO(app)
 login_manager = LoginManager()
 login_manager.login_view = 'login'

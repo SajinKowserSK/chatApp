@@ -23,6 +23,4 @@ class User:
         return self.username
 
     def check_password(self, password_input):
-        salt = bcrypt.gensalt()
-        hashedPassword = bcrypt.hashpw(password_input.encode('utf-8'), salt)
-        return self.password == hashedPassword
+        return bcrypt.checkpw(password_input.encode('utf-8'), self.password)
