@@ -18,6 +18,7 @@ room_members_collection = chat_db.get_collection("room_members")
 def save_user(username, email, password):
     salt = bcrypt.gensalt()
     hashedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
+    # insert a dict with params
     users = users_collection.insert_one({'_id': username, 'email': email, 'password': hashedPassword})
 
 
@@ -30,20 +31,29 @@ def get_user(username):
     else:
         return None
 
-
+# similiar to saving a user
 def save_room(room_name, create_by):
+
     room_id = rooms_collection.insert_one({'room_name': room_name, 'created_by': create_by,
                                            'created_at': dt.datetime.now()}).inserted_id
 
     add_room_member(room_id, room_name, create_by, is_room_admin=True)
     return room_id
 
-def update_room(room_id, room_name):
-    pass
+# first find the room, with a dict then another dict with {'$set': {updateDict}}
+# def update_room(room_id, room_name):
+#     rooms_collection.update_one({'_id': ObjectId(room_id)}, {'$set':{'name': room_name}})
 
+def update_room(room_id, room_name):
+    rooms_collection.update_one({'_id': ObjectId(room_id)}, {'$set': {'name': room_name}})
+    room_members_collection.update_many({'_id.room_id': ObjectId(room_id)}, {'$set': {'room_name': room_name}})
+
+# simple find_one called on collection to find room where object id equal to param
 def get_room(room_id):
     rooms_collection.find_one({'id': ObjectId(room_id)})
 
+
+# because our schema says room_member id is (room_id, username, make sure we do collection.insert({'_id': { room_id, username}, 'room_name', etc.
 def add_room_member(room_id, room_name, username, added_by, is_room_admin=False):
     room_members_collection.insert({'id':{'room_id':room_id, 'username': username},
     'room_name': room_name, 'added_by':added_by, 'added_at':dt.datetime.now(), 'is_room_admin':is_room_admin})
@@ -55,7 +65,8 @@ def add_room_members(room_id, room_name, usernames, added_by):
     )
 
 def remove_room_members(room_id, usernames):
-    pass
+    # have to use mongo db $in function here because the id can be multiple things (room id or usernames)
+    room_members_collection.delete_many({'_id': {'$in': [{'room_id': room_id, 'username': username} for username in usernames]}})
 
 def get_room_members(room_id):
     room_members_collection.find({'_id.room_id': ObjectId(room_id)})

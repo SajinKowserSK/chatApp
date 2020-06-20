@@ -44,6 +44,11 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+@app.route("/create-room", methods = ['GET', 'POST'])
+@login_required
+def create_room():
+    return render_template('create_room.html')
+
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
