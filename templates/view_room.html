@@ -5,7 +5,7 @@
     <title>My Chat App</title>
 </head>
 <body>
-<h1>Welcome to chat room {{ room }}</h1>
+<h1>Welcome to chat room {{ room.name }}</h1>
 
 <div id="messages"></div>
 
@@ -21,7 +21,7 @@
     socket.on('connect', function () {
         socket.emit('join_room', {
             username: "{{ username }}",
-            room: "{{ room }}"
+            room: "{{ room._id }}"
         });
 
         let message_input = document.getElementById('message_input');
@@ -32,7 +32,7 @@
             if (message.length) {
                 socket.emit('send_message', {
                     username: "{{ username }}",
-                    room: "{{ room }}",
+                    room: "{{ room._id }}",
                     message: message
                 })
             }
@@ -44,7 +44,7 @@
     window.onbeforeunload = function () {
         socket.emit('leave_room', {
             username: "{{ username }}",
-            room: "{{ room }}"
+            room: "{{ room._id }}"
         })
     };
 

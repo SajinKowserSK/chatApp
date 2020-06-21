@@ -11,17 +11,20 @@ socketio = SocketIO(app)
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
+
+
 @app.route('/')
 def home():
     rooms = []
-    if current_user.is_authenticated():
+
+    if current_user.is_authenticated:
         rooms = get_rooms_for_user(current_user.username)
-        print("THIS IS PRINT STATEMENT, CURR USER IS ", current_user.username)
-        print(rooms)
+
     return render_template("index.html", rooms=rooms)
 
 
 @app.route('/login', methods=['GET', 'POST'])
+
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
@@ -40,86 +43,78 @@ def login():
     return render_template('login.html', message=message)
 
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-
-    message = ''
-    if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        try:
-            save_user(username, email, password)
-            return redirect(url_for('login'))
-        except DuplicateKeyError:
-            message = "User already exists!"
-    return render_template('signup.html', message=message)
-
-
 @app.route("/logout/")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
-
-@app.route('/create-room/', methods=['GET', 'POST'])
+@app.route("/create-room/", methods = ['GET', 'POST'])
 @login_required
 def create_room():
-    message = ''
+    message = "hello"
     if request.method == 'POST':
-        room_name = request.form.get('room_name')
-        usernames = [username.strip() for username in request.form.get('members').split(',')]
+        roomName = request.form['room_name']
+        usernames = [username.strip() for username in request.form['members'].split(',')]
 
-        if len(room_name) and len(usernames):
-            room_id = save_room(room_name, current_user.username)
+
+        if len(roomName) and usernames:
+            roomID = save_room(roomName, current_user.username)
             if current_user.username in usernames:
                 usernames.remove(current_user.username)
-            add_room_members(room_id, room_name, usernames, current_user.username)
-            return redirect(url_for('view_room', room_id=room_id))
+
+            add_room_members(roomID, roomName, usernames, current_user.username)
+            return redirect(url_for('view_room', room_id=roomID))
+
         else:
-            message = "Failed to create room"
-    return render_template('create_room.html', message=message)
+            message = 'failed to create room'
+
+    return render_template("create_room.html", message=message)
 
 
-@app.route('/rooms/<room_id>/edit', methods=['GET', 'POST'])
-@login_required
-def edit_room(room_id):
-    room = get_room(room_id)
-    if room and is_room_admin(room_id, current_user.username):
-        existing_room_members = [member['_id']['username'] for member in get_room_members(room_id)]
-        room_members_str = ",".join(existing_room_members)
-        message = ''
-        if request.method == 'POST':
-            room_name = request.form.get('room_name')
-            room['name'] = room_name
-            update_room(room_id, room_name)
+@app.route("/signup", methods=['GET', 'POST'])
+def signup():
+    if current_user.is_authenticated:
+        redirect(url_for('home'))
 
-            new_members = [username.strip() for username in request.form.get('members').split(',')]
-            members_to_add = list(set(new_members) - set(existing_room_members))
-            members_to_remove = list(set(existing_room_members) - set(new_members))
-            if len(members_to_add):
-                add_room_members(room_id, room_name, members_to_add, current_user.username)
-            if len(members_to_remove):
-                remove_room_members(room_id, members_to_remove)
-            message = 'Room edited successfully'
-            room_members_str = ",".join(new_members)
-        return render_template('edit_room.html', room=room, room_members_str=room_members_str, message=message)
-    else:
-        return "Room not found", 404
+    message=''
+
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+
+        try:
+            save_user(username, email, password)
+            return redirect(url_for('login'))
+
+        except DuplicateKeyError:
+            message = "User already exists, choose different username"
+
+    return render_template('signup.html', message=message)
+
 
 
 @app.route('/rooms/<room_id>/')
 @login_required
 def view_room(room_id):
     room = get_room(room_id)
+
+    # print("ROOM ID IS", room_id)
+    # print("ROOM IS", room)
+
     if room and is_room_member(room_id, current_user.username):
         room_members = get_room_members(room_id)
         return render_template('view_room.html', username=current_user.username, room=room, room_members=room_members)
+
     else:
-        return "Room not found", 404
+        return 'Room not found', 404
+
+
+    # if username and room:
+    #
+    # else:
+    #     return redirect(url_for('home'))
 
 
 @socketio.on('send_message')
