@@ -37,7 +37,7 @@ def save_room(room_name, create_by):
     room_id = rooms_collection.insert_one({'room_name': room_name, 'created_by': create_by,
                                            'created_at': dt.datetime.now()}).inserted_id
 
-    add_room_member(room_id, room_name, create_by, is_room_admin=True)
+    add_room_member(room_id, room_name, create_by, create_by, is_room_admin=True)
     return room_id
 
 # first find the room, with a dict then another dict with {'$set': {updateDict}}
@@ -72,7 +72,7 @@ def get_room_members(room_id):
     room_members_collection.find({'_id.room_id': ObjectId(room_id)})
 
 def get_rooms_for_user(username):
-    room_members_collection.find({'_id.username' : username})
+    return list(room_members_collection.find({'id.username': username}))
 
 def is_room_member(room_id, username):
     room_members_collection.count_documents({'_id': {'room_id':ObjectId(room_id), 'username': username}})
