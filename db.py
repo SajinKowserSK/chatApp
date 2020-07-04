@@ -83,4 +83,12 @@ def is_room_admin(room_id, username):
         {'_id': {'room_id': ObjectId(room_id), 'username': username}, 'is_room_admin': True})
 
 def save_message(room_id, text, sender):
-    messages_collection.insert_one({'room_id':room_id, 'text': text, 'sender': sender})
+    messages_collection.insert_one({'room_id':room_id, 'text': text, 'sender': sender, 'created_at': datetime.now()})
+
+
+def get_messages(room_id):
+    messages= list(messages_collection.find({'room_id': room_id}))
+    for message in messages:
+        message['created_at'] = message['created_at'].strftime("%d %b, %H: %M")
+
+    return messages

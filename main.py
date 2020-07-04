@@ -105,7 +105,9 @@ def view_room(room_id):
 
     if room and is_room_member(room_id, current_user.username):
         room_members = get_room_members(room_id)
-        return render_template('view_room.html', username=current_user.username, room=room, room_members=room_members)
+        messages = get_messages(room_id)
+        return render_template('view_room.html', username=current_user.username, room=room,
+                               room_members=room_members, messages = messages)
 
     else:
         return 'Room not found', 404
@@ -122,7 +124,7 @@ def handle_send_message_event(data):
     app.logger.info("{} has sent message to the room {}: {}".format(data['username'],
                                                                     data['room'],
                                                                     data['message']))
-
+    data['created_at'] = datetime.now().strftime("%d %b, %H:%M")
     save_message(data['room'], data['message'], data['username'])
     socketio.emit('receive_message', data, room=data['room'])
 
