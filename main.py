@@ -122,7 +122,10 @@ def handle_send_message_event(data):
     app.logger.info("{} has sent message to the room {}: {}".format(data['username'],
                                                                     data['room'],
                                                                     data['message']))
+
+    save_message(data['room'], data['message'], data['username'])
     socketio.emit('receive_message', data, room=data['room'])
+
 
 
 @socketio.on('join_room')

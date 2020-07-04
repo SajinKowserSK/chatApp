@@ -13,6 +13,7 @@ chat_db = client.get_database("ChatDB")
 users_collection = chat_db.get_collection("users")
 rooms_collection = chat_db.get_collection("rooms")
 room_members_collection = chat_db.get_collection("room_members")
+messages_collection = chat_db.get_collection("messages")
 
 # given username, creates collection with username as primary key, email field and password field (hashed pwd)
 def save_user(username, email, password):
@@ -80,3 +81,6 @@ def is_room_member(room_id, username):
 def is_room_admin(room_id, username):
     return room_members_collection.count_documents(
         {'_id': {'room_id': ObjectId(room_id), 'username': username}, 'is_room_admin': True})
+
+def save_message(room_id, text, sender):
+    messages_collection.insert_one({'room_id':room_id, 'text': text, 'sender': sender})
