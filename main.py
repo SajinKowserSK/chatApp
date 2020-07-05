@@ -49,6 +49,19 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+@app.route("/search/", methods=['GET', 'POST'])
+@login_required
+def search():
+    if request.method  == 'POST':
+        query = get_user(request.form['keywords'].strip()).username
+
+        return render_template("search.html", mentors=query)
+
+    else:
+        return render_template("search.html")
+
+
+
 @app.route("/create-room/", methods = ['GET', 'POST'])
 @login_required
 def create_room():
@@ -147,6 +160,9 @@ def handle_leave_room_event(data):
 @login_manager.user_loader
 def load_user(username):
     return get_user(username)
+
+
+
 
 
 if __name__ == '__main__':

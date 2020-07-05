@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<head>
+    <title>Find Mentors</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+
+    <style>
+        /* On mouse-over, add a deeper shadow */
+        @font-face {
+        font-family: 'DM-Sans';
+        src: url_for("{{url_for('static', filename='fonts/DMSans-Regular.ttf')}}")
+        /* src : url("../static/fonts/DMSans-Regular.ttf") */
+        }
+
+        @font-face {
+            font-family: "Monteserrat-Light";
+            src: url("{{url_for('static',filename='fonts/Montserrat-Light.ttf')}}")
+        }
+
+    .mentor-card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    .tag-font {
+        font-family: "Monteserrat-Light";
+    }
+/* Add some padding inside the card container */
+    .container-fluid {
+        padding-top: 3%;
+        padding-left: 2%;
+    }
+
+    .image {
+        height: 230px;
+        width: 100%;
+    }
+
+    .card-container {
+        padding-left: 0%;
+        padding-top: 10%;
+    }
+
+    .mentor-card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        height: 230px;
+        width: 100%;
+        max-width: 100%;
+        padding-top: 0%;
+        overflow: scroll;
+    }
+
+    .grey-font {
+        color: #8f9aac;
+    }
+
+
+    .sz-10 {
+        font-size: 10px;
+    }
+
+    .name-font {
+        font-size: 18px;
+    }
+
+    .header-font {
+        font-size: 15px;
+    }
+
+    .sz-30 {
+        font-size: 30px;
+    }
+
+    .dm-sans-font {
+        font-family: 'DM-Sans';
+    }
+
+    .sz-12 {
+        font-size: 12px;
+    }
+
+
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-10">
+            <img src="{{url_for('static',filename='images/icon2.png')}}">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p class="text-center poppins-bold lighter-gray sz-30">Your Search Results for: {{mentors}}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <form method="post" action="{{url_for('search')}}">
+                <div class="input-group mb-3">
+                    <input type="text" name="keywords" placeholder="Enter Keywords (Eg; Engineering, UofT" class="form-control">
+                    <div class="input-group-append">
+                        <input type="submit" class="btn btn-green white-text" value="Find Mentors"></button>
+                    </div>
+                  </div>
+            </form>
+
+        </div>
+        </div>
+        <div class="row card-row">
+
+
+
+            <div class="col-4">
+                <div class="container card-container">
+                    <div class="mentor-card">
+                    <div class="row">
+                        <div class="col-5">
+
+                        </div>
+                        <div class="col-7">
+                            <h4 class="name-font gray-font">{{mentors}}</h4>
+                            <p class="grey-font header-font reduced-top-padding">mentors header</p>
+                            <p class="dm-sans-font sz-12 reduced-top-padding">mentors bio</p>
+
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+
+            </div>
+
+                </div>
+              </div>
+            </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
