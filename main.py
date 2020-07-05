@@ -85,6 +85,22 @@ def create_room():
     return render_template("create_room.html", message=message)
 
 
+@app.route('/pm/<mentor>/', methods = ['GET', 'POST'])
+@login_required
+def pm(mentor):
+
+    roomName = "Private chat with " + str(mentor).capitalize()
+    usernames = [current_user.username, mentor]
+
+
+    roomID = save_room(roomName, current_user.username)
+    if current_user.username in usernames:
+        usernames.remove(current_user.username)
+
+    add_room_members(roomID, roomName, usernames, current_user.username)
+    return redirect(url_for('view_room', room_id=roomID))
+
+
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
