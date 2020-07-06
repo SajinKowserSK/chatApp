@@ -89,7 +89,7 @@ def create_room():
 @login_required
 def pm(mentor):
 
-    roomName = "Private chat with " + str(mentor).capitalize()
+    roomName = "Private chat with " + str(mentor).capitalize() +" and " + current_user.username
     usernames = [current_user.username, mentor]
 
 
